@@ -1,0 +1,60 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Task {
+  assignedTo   String?
+  assignedUser String?
+  createdAt    DateTime        @default(now())
+  description  String?
+  id           String          @id @default(cuid())
+  status       EnumTaskStatus?
+  title        String?
+  updatedAt    DateTime        @updatedAt
+}
+
+model Interaction {
+  content         String?
+  createdAt       DateTime                        @default(now())
+  id              String                          @id @default(cuid())
+  interactionType EnumInteractionInteractionType?
+  timestamp       DateTime?
+  updatedAt       DateTime                        @updatedAt
+  user            User?                           @relation(fields: [userId], references: [id])
+  userId          String?
+}
+
+model AiModel {
+  configuration Json?
+  createdAt     DateTime @default(now())
+  id            String   @id @default(cuid())
+  modelName     String?
+  updatedAt     DateTime @updatedAt
+  version       String?
+}
+
+model User {
+  createdAt    DateTime      @default(now())
+  email        String?       @unique
+  firstName    String?
+  id           String        @id @default(cuid())
+  interactions Interaction[]
+  lastName     String?
+  password     String
+  roles        Json
+  updatedAt    DateTime      @updatedAt
+  username     String        @unique
+}
+
+enum EnumTaskStatus {
+  Option1
+}
+
+enum EnumInteractionInteractionType {
+  Option1
+}
